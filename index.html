@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RandomBtn</title>
+        <link rel="icon" href="images/favicon.png" type="image/png">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol&display=swap" rel="stylesheet">        <style>
+            figure {
+                position: relative;
+            }
+
+            figcaption {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                min-height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            figcaption h1 {
+                color: rgb(16, 28, 110);
+                font-size: 3.6rem;
+                text-shadow: 0 0 5px #666;
+                font-family: "Kaisei Decol";
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container d-flex justify-content-center">
+            <div class="card my-5 shadow" style="max-width: 600px;">
+                <figure>
+                    <figcaption class="display-3">
+                        <h1>今日の運勢</h1>
+                    </figcaption>
+                    <img class="card-img-top" src="images/random.jpg" alt="運勢画像">
+                </figure>
+                <h2 class="card-title mx-5 mt-2 display-4 text-black-50" id="text"></h2>
+                <div class="card-body px-5">
+                    <button class="btn btn-primary w-100 mb-2" id="random">今日の運勢</button>
+                    <button class="btn btn-outline-secondary w-100 my-2" id="reset" onclick="reset()">リセット</button>
+                    <h3 class="mt-3 display-6 text-dark" id="result"></h3>
+                    <input class="form-control mb-3" id="input" placeholder="運勢を追加しEnter">
+                    <button class="btn btn-outline-secondary w-100 my-2" id="lists">現在の運勢一覧</button>
+                    <ul class="list-group" id="listsArr" style="list-style-type: none;padding-left: 0;"></ul>
+                </div>
+            </div>
+        </div>
+        <script>
+            const input = document.querySelector('#input')
+            const result = document.querySelector('#result')
+            const text = document.querySelector('#text')
+            const random = document.querySelector('#random')
+            const lists = document.querySelector('#lists')
+            const listsArr = document.querySelector('#listsArr')
+            let items = [
+                '今日は新しい挑戦が成功する日。自信を持って一歩踏み出して！',
+                '忙しい日になりそうですが、冷静に行動すれば順調に進むでしょう！',
+                '何かを始めるのに最適な日。行動に移すことで運が開ける予感！',
+                '周囲とのコミュニケーションがカギ。聞き手になれば良い結果が！',
+                '予想外のサプライズが待っている日。ポジティブな気持ちで受け入れて！',
+                '仕事や勉強の成果が実る時。地道な努力が報われる瞬間！',
+                '今日のあなたの直感は冴えています。信じて行動することで幸運が！',
+                '健康面で少し注意が必要な日。無理せず、休息を大切にして！',
+                '思いがけない出会いがありそう。新しい関係があなたにプラスに働く！',
+                '迷っていることがあれば、今日は決断するのが吉。自分の意志を大切に！'
+            ]
+            const reset = () => text.innerText = ''
+            const getJson = () => JSON.parse(localStorage.getItem('items')) ?? items
+            window.addEventListener('load', () => {
+                items = getJson()
+                document.querySelector('#text').innerText = '';
+            })
+            input.addEventListener('keydown', (e) => {
+                if (e.key == 'Enter' && input.value.trim() !== '') {
+                    document.querySelector('#result').innerText = '「' + input.value + '」を追加しました'
+                    items.push(input.value)
+                    localStorage.setItem('items', JSON.stringify(items))
+                }
+            })
+            random.addEventListener('click', () => {
+                document.querySelector('#text').innerText = items[Math.floor(Math.random() * items.length)]
+                input.value = ''
+                result.innerText = ''
+            })
+            lists.addEventListener('click', () => {
+                listsArr.innerHTML = '';
+                const currentItems = getJson();
+                currentItems.forEach((val) => {
+                    const li = document.createElement('li');
+                    li.classList.add('list-group-item')
+                    li.textContent = val;
+                    listsArr.appendChild(li);
+                });
+            })
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
